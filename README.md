@@ -7,4 +7,6 @@ Simply run
 ```
 python ICGPaint.py
 ```
-. You should see the main tkinter window appear.
+. You should see the main tkinter window appear:
+
+![GUIHierarchy](https://github.com/MCInversion/ICG_Painter2023/blob/ReadmeResources/readme_res/painterScrn.jpg)
