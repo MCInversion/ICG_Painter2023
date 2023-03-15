@@ -14,4 +14,4 @@ default_brush_color = "red"
 default_brush_width = 20
 
 default_tool_icon_size = 32
-default_toolbar_height = default_tool_icon_size + 1
+default_toolbar_height = int(1.5 * default_tool_icon_size)

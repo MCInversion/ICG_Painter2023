@@ -22,21 +22,20 @@ class MainApplication(tk.Frame):
         self.parent.geometry("{}x{}".format(default_img_width, default_img_height))
 
         self.toolbar_frame = tk.Frame(self.parent)
-        self.toolbar_frame.pack(side=TOP, fill="x")
+        self.toolbar_frame.pack(side="top", fill="x")
 
         brush_icon_img = PhotoImage(file=r"res\Brush.png")
         self.brush_button = Button(self.toolbar_frame, image=brush_icon_img)
         self.brush_button.image = brush_icon_img
-        self.brush_button.pack(side=LEFT)
+        self.brush_button.pack(side="left")
 
         self.canvas = Canvas(self.parent, bg = default_img_color, height = default_img_height, width = default_img_width)
         self.canvas.place(x=0, y=default_toolbar_height)
-        self.canvas.pack()
 
         self.image_project = ImageProject(self.canvas)
         self.image_project.new()
 
-        self.brush = PaintBrush(self.image_project, default_brush_color, default_brush_width)
+        self.brush = PaintBrush(self.canvas, default_brush_color, default_brush_width)
         self.brush_button.bind('<ButtonPress-1>', self.brush.change_width)
 
         self.menubar = Menu(self.parent)
@@ -49,8 +48,8 @@ class MainApplication(tk.Frame):
         self.menubar.add_cascade(label="File", menu=self.filemenu)
         self.parent.config(menu=self.menubar)
 
-        self.parent.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
-        self.parent.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
+        self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
+        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
         self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
 
     def open_file(self):
