@@ -11,6 +11,8 @@ from src.paint_brush import PaintBrush
 from src.defaults import *
 from src.image_project import *
 
+global brush_icon_img
+
 class MainApplication(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
@@ -19,16 +21,23 @@ class MainApplication(tk.Frame):
         self.parent = parent
         self.parent.geometry("{}x{}".format(default_img_width, default_img_height))
 
-        self.canvas_frame = tk.Frame(self.parent)
-        self.canvas_frame.pack()
+        self.toolbar_frame = tk.Frame(self.parent)
+        self.toolbar_frame.pack(side=TOP, fill="x")
 
-        self.canvas = Canvas(self.canvas_frame, bg = default_img_color, height = default_img_height, width = default_img_width)
+        brush_icon_img = PhotoImage(file=r"res\Brush.png")
+        self.brush_button = Button(self.toolbar_frame, image=brush_icon_img)
+        self.brush_button.image = brush_icon_img
+        self.brush_button.pack(side=LEFT)
+
+        self.canvas = Canvas(self.parent, bg = default_img_color, height = default_img_height, width = default_img_width)
+        self.canvas.place(x=0, y=default_toolbar_height)
         self.canvas.pack()
 
         self.image_project = ImageProject(self.canvas)
         self.image_project.new()
 
         self.brush = PaintBrush(self.image_project, default_brush_color, default_brush_width)
+        self.brush_button.bind('<ButtonPress-1>', self.brush.change_width)
 
         self.menubar = Menu(self.parent)
         self.filemenu = Menu(self.menubar, tearoff=False)
