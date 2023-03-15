@@ -7,7 +7,7 @@ Simply run
 ```
 python ICGPaint.py
 ```
-. You should see the main tkinter window appear with an empty image. 
+in the repo root directory. You should see the main tkinter window appear with an empty image. 
 
 The current outline of the GUI is:
 
