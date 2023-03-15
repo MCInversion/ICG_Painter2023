@@ -4,8 +4,12 @@
 
 from tkinter import *
 import tkinter as tk
-import src.Util as Util
-from src.PaintBrush import PaintBrush
+from tkinter.filedialog import asksaveasfilename, askopenfilename
+
+import src.util as Util
+from src.paint_brush import PaintBrush
+from src.defaults import *
+from src.image_project import *
 
 class MainApplication(tk.Frame):
 
@@ -13,25 +17,42 @@ class MainApplication(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
         self.parent = parent
+        self.parent.geometry("{}x{}".format(default_img_width, default_img_height))
 
-        self.menubar = Menu(root)
-        self.filemenu = Menu(self.menubar, tearoff=False)
-        self.filemenu.add_command(label="New", command=Util.do_nothing)
-        self.filemenu.add_command(label="Open", command=Util.do_nothing)
-        self.filemenu.add_command(label="Save", command=Util.do_nothing)
-        self.filemenu.add_command(label="Save as...", command=Util.do_nothing)
-        self.filemenu.add_separator()
-        self.filemenu.add_command(label="Exit", command=root.quit)
-        self.menubar.add_cascade(label="File", menu=self.filemenu)
-        root.config(menu=self.menubar)
+        self.canvas_frame = tk.Frame(self.parent)
+        self.canvas_frame.pack()
 
-        self.canvas = Canvas(self, bg = "white", height = 400, width = 500)
+        self.canvas = Canvas(self.canvas_frame, bg = default_img_color, height = default_img_height, width = default_img_width)
         self.canvas.pack()
-        self.brush = PaintBrush(self.canvas, "red", 50)
 
-        root.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
-        root.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
-        root.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
+        self.image_project = ImageProject(self.canvas)
+        self.image_project.new()
+
+        self.brush = PaintBrush(self.image_project, default_brush_color, default_brush_width)
+
+        self.menubar = Menu(self.parent)
+        self.filemenu = Menu(self.menubar, tearoff=False)
+        self.filemenu.add_command(label="New", command=self.image_project.new)
+        self.filemenu.add_command(label="Open", command=self.open_file)
+        self.filemenu.add_command(label="Save", command=self.save_file)
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label="Exit", command=self.parent.quit)
+        self.menubar.add_cascade(label="File", menu=self.filemenu)
+        self.parent.config(menu=self.menubar)
+
+        self.parent.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
+        self.parent.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
+        self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
+
+    def open_file(self):
+        file_path = tk.filedialog.askopenfilename(filetypes=[("PNG Image files", "*.png;")])
+        if file_path:
+            self.image_project.open(file_path)
+
+    def save_file(self):
+        file_path = tk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
+        if file_path:
+            self.image_project.save(file_path)
 
 if __name__ == "__main__":
     root = tk.Tk()
