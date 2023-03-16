@@ -7,6 +7,7 @@ import tkinter as tk
 
 from src.defaults import *
 from src.mat_vec import *
+from src.defaults import *
 
 class ImageProject():
 	
@@ -17,6 +18,7 @@ class ImageProject():
     def __configure(self):
         if self.photo_image:
             self.canvas.configure(width=self.photo_image.width(), height=self.photo_image.height())
+            self.canvas.create_rectangle(0, 0, self.photo_image.width(), self.photo_image.height(), fill=default_img_color)
 
     def new(self):
         self.canvas.delete('all')
