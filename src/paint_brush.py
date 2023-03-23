@@ -5,6 +5,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter.colorchooser import askcolor
+from tkinter import simpledialog
 
 class PaintBrush():
     def __init__(self, canvas, color, width):
@@ -22,4 +23,6 @@ class PaintBrush():
         self.color = colors[1]
 
     def change_width(self, p):
-        print("PaintBrush.change_width")
+        self.width = simpledialog.askinteger("Input", "Set Brush Width",
+                                 parent=self.canvas,
+                                 minvalue=0, maxvalue=500)
