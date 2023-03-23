@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from turtle import *
 
 delay(0)
@@ -11,3 +12,6 @@ def kresli(n, d):
         left(90)
 
 kresli(6, 200)
+=======
+:)
+>>>>>>> 02920cacd93eb77496caf75f0b09839864799dbc
