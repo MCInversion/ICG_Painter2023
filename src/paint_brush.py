@@ -3,23 +3,25 @@
 # ===============================================================================================
 
 from tkinter import *
-import tkinter as tk
+from src.tool import *
+from src.command import DrawPixelCommand
+from src.defaults import *
 from tkinter.colorchooser import askcolor
 
-class PaintBrush():
-    def __init__(self, canvas, color, width):
+class PaintBrush(Tool):
+    def __init__(self, image_project, size=default_brush_width, color="black"):
+        super().__init__(image_project)
+        self.size = size
         self.color = color
-        self.width = width
-        self.canvas = canvas
- 
-    def draw_pixel(self, p):
-        x, y = p.x, p.y
-        r = int(self.width / 2)
-        self.canvas.create_oval(x - r, y - r, x + r, y + r, fill=self.color, outline="")
+    
+    def handle_event(self, event):
+        if self.active and (event.type == EventType.MOUSEBUTTONDOWN or event.type == EventType.MOUSEMOTION):
+            x, y = event.pos
+            command = DrawPixelCommand(self, x, y)
+            command.execute()
 
-    def change_color(self, p):
-        colors = askcolor(title="Tkinter Color Chooser")
-        self.color = colors[1]
+    def change_color(self, color):
+        self.color = color
 
-    def change_width(self, p):
+    def change_width(self):
         print("PaintBrush.change_width")

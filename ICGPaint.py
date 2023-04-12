@@ -6,10 +6,11 @@ from tkinter import *
 import tkinter as tk
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 
-import src.util as Util
 from src.paint_brush import PaintBrush
 from src.defaults import *
 from src.image_project import *
+from src.bindings import *
+from src.command import *
 
 global brush_icon_img
 
@@ -25,12 +26,10 @@ class MainApplication(tk.Frame):
         self.toolbar_frame.pack(side="top", fill="x")
 
         brush_icon_img = PhotoImage(file=r"res\Brush.png")
-        self.brush_button = Button(self.toolbar_frame, image=brush_icon_img)
-        self.brush_button.image = brush_icon_img
-        self.brush_button.pack(side="left")
+        self.brush_button = add_tool_button(self.toolbar_frame, brush_icon_img, command = DrawPixelCommand(self.brush.draw_pixel), accelerator="Ctrl+B")
 
         self.canvas = Canvas(self.parent, bg = default_img_color, height = default_img_height, width = default_img_width)
-        self.canvas.place(x=0, y=default_toolbar_height)
+        self.canvas.place(x = 0, y = default_toolbar_height)
 
         self.image_project = ImageProject(self.canvas)
         self.image_project.new()
@@ -38,29 +37,17 @@ class MainApplication(tk.Frame):
         self.brush = PaintBrush(self.canvas, default_brush_color, default_brush_width)
         self.brush_button.bind('<ButtonPress-1>', self.brush.change_width)
 
-        self.menubar = Menu(self.parent)
-        self.filemenu = Menu(self.menubar, tearoff=False)
-        self.filemenu.add_command(label="New", command=self.image_project.new)
-        self.filemenu.add_command(label="Open", command=self.open_file)
-        self.filemenu.add_command(label="Save", command=self.save_file)
-        self.filemenu.add_separator()
-        self.filemenu.add_command(label="Exit", command=self.parent.quit)
-        self.menubar.add_cascade(label="File", menu=self.filemenu)
-        self.parent.config(menu=self.menubar)
-
-        self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
-        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
-        self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
-
-    def open_file(self):
-        file_path = tk.filedialog.askopenfilename(filetypes=[("PNG Image files", "*.png;")])
-        if file_path:
-            self.image_project.open(file_path)
-
-    def save_file(self):
-        file_path = tk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
-        if file_path:
-            self.image_project.save(file_path)
+        self.command_menu = CommandMenu(self.parent)
+        self.command_menu.add_command_with_binding("New", NewImageCommand(self.image_project), "Ctrl+N")
+        self.command_menu.add_command_with_binding("Open", OpenFileCommand(self.image_project), "Ctrl+O")
+        self.command_menu.add_command_with_binding("Save", SaveFileCommand(self.image_project), "Ctrl+S")
+        self.command_menu.add_command_with_binding("Exit", QuitCommand(self), "Ctrl+Q")
+        self.command_menu.add_separator()
+        
+        self.parent.config(menu=self.command_menu.menu)
+        self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel)
+        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel)
+        self.parent.bind('<ButtonPress-2>', self.brush.change_color)
 
 if __name__ == "__main__":
     root = tk.Tk()

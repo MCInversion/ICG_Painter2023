@@ -9,8 +9,7 @@ from src.defaults import *
 from src.mat_vec import *
 from src.defaults import *
 
-class ImageProject():
-	
+class ImageProject:
     def __init__(self, canvas):
         self.canvas = canvas
         self.photo_image = None
@@ -20,17 +19,25 @@ class ImageProject():
             self.canvas.configure(width=self.photo_image.width(), height=self.photo_image.height())
             self.canvas.create_rectangle(0, 0, self.photo_image.width(), self.photo_image.height(), fill=default_img_color)
 
-    def new(self):
-        self.canvas.delete('all')
-        self.photo_image = tk.PhotoImage(width=default_img_width,
-                                         height=default_img_height)
-        self.__configure()
-        self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+    def new(self, command=None):
+        if command is None:
+            self.canvas.delete('all')
+            self.photo_image = tk.PhotoImage(width=default_img_width, height=default_img_height)
+            self.__configure()
+            self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+        else:
+            command.execute()
 
-    def open(self, file_path):
-        self.photo_image = tk.PhotoImage(file=file_path)
-        self.__configure()
-        self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+    def open(self, file_path, command=None):
+        if command is None:
+            self.photo_image = tk.PhotoImage(file=file_path)
+            self.__configure()
+            self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+        else:
+            command.execute()
 
-    def save(self, file_path):
-        self.photo_image.write(file_path, format="png")
+    def save(self, file_path, command=None):
+        if command is None:
+            self.photo_image.write(file_path, format="png")
+        else:
+            command.execute()
