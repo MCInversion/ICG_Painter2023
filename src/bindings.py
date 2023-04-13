@@ -9,11 +9,10 @@ class CommandMenu(Menu):
 		super().__init__(parent, *args, **kwargs)
 		self.parent = parent
 		
-	def add_command_with_binding(self, label, command, accelerator = None):
-		self.add_command(label = label, command = command.execute)
-		if accelerator is not None:
-			self.parent.bind(accelerator, command.execute)
-
+	def add_command_with_binding(self, label, command, accelerator = None, accelerator2 = None):
+		self.add_command(label = label, command = command.execute, accelerator = accelerator)
+		if accelerator2 is not None:
+			self.parent.bind(accelerator2, command.execute)
 
 def add_tool_button(toolbar_frame, tool, tool_icon_img, **button_kwargs):
 	button = Button(master = toolbar_frame, image = tool_icon_img, **button_kwargs)

@@ -38,11 +38,11 @@ class MainApplication(tk.Frame):
 
 		self.menubar = Menu(self.parent)
 		self.filemenu = CommandMenu(self.parent, tearoff=False)
-		self.filemenu.add_command_with_binding(label="New", command=NewImageCommand(self.image_project), accelerator='<Control-N>')
-		self.filemenu.add_command_with_binding(label="Open", command=OpenFileCommand(filetypes = [("PNG Image files", "*.png;")], image_project = self.image_project), accelerator='<Control-O>')
-		self.filemenu.add_command_with_binding(label="Save", command=SaveFileCommand(self.image_project), accelerator='<Control-S>')
+		self.filemenu.add_command_with_binding(label="New", command=NewImageCommand(self.image_project), accelerator="Ctrl+N", accelerator2='<Control-N>')
+		self.filemenu.add_command_with_binding(label="Open", command=OpenFileCommand(filetypes = [("PNG Image files", "*.png;")], image_project = self.image_project), accelerator="Ctrl+O", accelerator2='<Control-O>')
+		self.filemenu.add_command_with_binding(label="Save", command=SaveFileCommand(self.image_project), accelerator="Ctrl+S", accelerator2='<Control-S>')
 		self.filemenu.add_separator()
-		self.filemenu.add_command_with_binding(label="Exit", command=QuitCommand(self), accelerator='<Control-Q>')
+		self.filemenu.add_command_with_binding(label="Exit", command=QuitCommand(self), accelerator="Ctrl+Q", accelerator2='<Control-Q>')
 		self.menubar.add_cascade(label="File", menu=self.filemenu)
 		self.parent.config(menu=self.menubar)
 		
