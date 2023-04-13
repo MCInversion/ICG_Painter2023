@@ -9,7 +9,7 @@ from src.defaults import *
 from src.mat_vec import *
 from src.defaults import *
 
-class ImageProject:
+class ImageProject():
     def __init__(self, canvas):
         self.canvas = canvas
         self.photo_image = None
@@ -28,16 +28,16 @@ class ImageProject:
         else:
             command.execute()
 
-    def open(self, file_path, command=None):
+    def open(self, file_path, command = None):
         if command is None:
-            self.photo_image = tk.PhotoImage(file=file_path)
+            self.photo_image = tk.PhotoImage(file = file_path)
             self.__configure()
-            self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+            self.canvas.create_image(0, 0, image = self.photo_image, anchor="nw")
         else:
             command.execute()
 
-    def save(self, file_path, command=None):
+    def save(self, file_path, command = None):
         if command is None:
-            self.photo_image.write(file_path, format="png")
+            self.photo_image.write(file_path, format = "png")
         else:
             command.execute()

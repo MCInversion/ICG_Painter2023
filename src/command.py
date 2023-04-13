@@ -19,13 +19,14 @@ class NewImageCommand(Command):
         self.image_project.new()
 
 class OpenFileCommand(Command):
-    def __init__(self, filetypes):
+    def __init__(self, filetypes, image_project):
         self.filetypes = filetypes
+        self.image_project = image_project
 
-    def execute(self, image_project):
+    def execute(self):
         file_path = tk.filedialog.askopenfilename(filetypes=self.filetypes)
         if file_path:
-            image_project.open(file_path)
+            self.image_project.open(file_path)
 
 class SaveFileCommand(Command):
     def __init__(self, image_project):

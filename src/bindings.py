@@ -8,8 +8,8 @@ class CommandMenu(Menu):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         
-    def add_command_with_binding(self, label, command, accelerator=None):
-        self.add_command(label=label, command=command.execute())
+    def add_command_with_binding(self, label, command, accelerator = None):
+        self.add_command(label = label, command = command.execute())
         if accelerator is not None:
             self.bind_all(accelerator, lambda: command.execute())
 
