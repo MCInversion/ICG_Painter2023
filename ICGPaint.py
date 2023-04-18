@@ -5,12 +5,11 @@
 from tkinter import *
 import tkinter as tk
 from tkinter.filedialog import asksaveasfilename, askopenfilename
-
-import src.util as Util
+from eraser_tool import eraser
+from tkinter import colorchooser
 from src.paint_brush import PaintBrush
 from src.defaults import *
 from src.image_project import *
-
 global brush_icon_img
 
 class MainApplication(tk.Frame):
@@ -29,7 +28,12 @@ class MainApplication(tk.Frame):
         self.brush_button.image = brush_icon_img
         self.brush_button.pack(side="left")
 
-        self.canvas = Canvas(self.parent, bg = default_img_color, height = default_img_height, width = default_img_width)
+        eraser_icon_img = PhotoImage(file=r"res\eraser.png")
+        self.eraser_button = Button(self.toolbar_frame, image=eraser_icon_img, command=self.use_eraser)
+        self.eraser_button.image = eraser_icon_img
+        self.eraser_button.pack(side="left")
+
+        self.canvas = Canvas(self.parent, bg=default_img_color, height=default_img_height, width=default_img_width)
         self.canvas.place(x=0, y=default_toolbar_height)
 
         self.image_project = ImageProject(self.canvas)
@@ -48,9 +52,9 @@ class MainApplication(tk.Frame):
         self.menubar.add_cascade(label="File", menu=self.filemenu)
         self.parent.config(menu=self.menubar)
 
-        self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
-        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
-        self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
+        self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel)  # bind left button to self.brush.draw_pixel
+        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel)  # bind mouse move to self.brush.draw_pixel
+        self.parent.bind('<ButtonPress-3>', self.change_brush_color)  # bind scroll wheel click to colorpicker
 
     def open_file(self):
         file_path = tk.filedialog.askopenfilename(filetypes=[("PNG Image files", "*.png;")])
@@ -62,11 +66,25 @@ class MainApplication(tk.Frame):
         if file_path:
             self.image_project.save(file_path)
 
+    def use_eraser(self):
+        self.brush.change_tool("eraser")
+        eraser_obj = eraser(self.parent, self.canvas)
+        eraser_obj.popup()
+
+    def change_brush_color(self, event):
+        if self.brush.tool == "eraser":
+            color = self.brush.change_color(None)
+            self.canvas.bind('<B1-Motion>', self.brush.draw_pixel)
+            self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel)
+
+
 if __name__ == "__main__":
     root = tk.Tk()
 
     root.iconbitmap("res/ICGIcon.ico")
     root.title("Painter")
 
-    MainApplication(root).pack(side = "top", fill = "both", expand = True)
+    MainApplication(root).pack(side="top", fill="both", expand=True)
     root.mainloop()
+
+
