@@ -20,6 +20,6 @@ class PaintBrush():
     def change_color(self, p):
         colors = askcolor(title="Tkinter Color Chooser")
         self.color = colors[1]
-
+        
     def change_width(self, p):
         print("PaintBrush.change_width")
