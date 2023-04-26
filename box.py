@@ -26,7 +26,7 @@ class box(tk.Frame):
         
         self.canvas.bind('<ButtonRelease-1>', self.klik)
         self.canvas.bind('<Motion>', self.process)
-        self.canvas.bind('<Escape>', self.cancel)
+        self.canvas.master.bind('<Escape>', self.cancel)
 
     def klik(self, event):
         if self.pos == 0:
@@ -46,9 +46,9 @@ class box(tk.Frame):
             self.canvas.delete(self.rect)
             self.rect = self.canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2)
 
-    def cancel(self):
+    def cancel(self, event):
         if self.pos == 1:
-            self.cavnas.delete(self.rect)
+            self.canvas.delete(self.rect)
             self.pos = 0
 
 if __name__ == "__main__":
