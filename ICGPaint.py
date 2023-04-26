@@ -10,13 +10,19 @@ import src.util as Util
 from src.paint_brush import PaintBrush
 from src.defaults import *
 from src.image_project import *
-
+from grafikasipka import DrawingApp 
 global brush_icon_img
 
+s=3
 class MainApplication(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
+
+        self.prvax=0
+        self.prvay=0
+        self.stav=0
+        self.m=0
 
         self.parent = parent
         self.parent.geometry("{}x{}".format(default_img_width, default_img_height))
@@ -28,6 +34,11 @@ class MainApplication(tk.Frame):
         self.brush_button = Button(self.toolbar_frame, image=brush_icon_img)
         self.brush_button.image = brush_icon_img
         self.brush_button.pack(side="left")
+
+        sipka_icon_img = PhotoImage(file=r"res\sipka.png")
+        self.sipka_button = Button(self.toolbar_frame, image=sipka_icon_img, command=self.sipka)
+        self.sipka_button.image = sipka_icon_img
+        self.sipka_button.pack(side="left")
 
         self.canvas = Canvas(self.parent, bg = default_img_color, height = default_img_height, width = default_img_width)
         self.canvas.place(x=0, y=default_toolbar_height)
@@ -48,9 +59,11 @@ class MainApplication(tk.Frame):
         self.menubar.add_cascade(label="File", menu=self.filemenu)
         self.parent.config(menu=self.menubar)
 
+
         self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
         self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
         self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
+
 
     def open_file(self):
         file_path = tk.filedialog.askopenfilename(filetypes=[("PNG Image files", "*.png;")])
@@ -61,6 +74,29 @@ class MainApplication(tk.Frame):
         file_path = tk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
         if file_path:
             self.image_project.save(file_path)
+            
+    def sipka(self):
+        self.stav='kresli'
+        self.m=self.m+1
+        self.canvas.bind('<ButtonPress-1>', self.aa1)
+        self.canvas.bind('<ButtonRelease>', self.aa3)
+        self.canvas.bind('<B1-Motion>', self.aa2)
+
+            
+    def aa1(self, event):
+        l = DrawingApp(self.canvas)
+        l.prvy(event.x,event.y)
+        self.prvax=event.x
+        self.prvay=event.y
+    def aa2(self,event):
+        if self.stav=='kresli':
+            l = DrawingApp(self.canvas)
+            l.kresli(self.prvax,self.prvay,event.x,event.y,self.m)
+    def aa3(self, event):
+        self.stav=0
+        l = DrawingApp(self.canvas)
+        l.druhy(event.x,event.y)
+        
 
 if __name__ == "__main__":
     root = tk.Tk()
