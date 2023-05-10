@@ -49,8 +49,15 @@ class MainApplication(tk.Frame):
         self.parent.config(menu=self.menubar)
 
         self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
-        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
+        self.canvas.bind('<ButtonPress-1>', self.brush.assign_initial)
+        self.canvas.master.bind('<KeyPress>', self.snap) # bind left shift to self.snap
+        self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel
+        self.canvas.bind('<ButtonRelease>', self.brush.assign_initial)
         self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
+
+    def snap(self, event):
+        if event.keysym == 'Shift_L':
+            self.brush.snap = not self.brush.snap
 
     def open_file(self):
         file_path = tk.filedialog.askopenfilename(filetypes=[("PNG Image files", "*.png;")])
