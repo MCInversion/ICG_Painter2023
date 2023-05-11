@@ -1,36 +1,45 @@
-# ===============================================================================================
-# An image project object for containing current image data
-# ===============================================================================================
-
 from tkinter import *
 import tkinter as tk
+from tkinter import simpledialog
+from tkinter.filedialog import asksaveasfilename, askopenfilename
+from PIL import Image, ImageTk
+from PIL import Image as PilImage, ImageTk
 
+import src.util as Util
+from src.paint_brush import PaintBrush
 from src.defaults import *
 from src.mat_vec import *
-from src.defaults import *
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 
-class ImageProject():
-	
+class ImageProject:
     def __init__(self, canvas):
         self.canvas = canvas
         self.photo_image = None
-
-    def __configure(self):
-        if self.photo_image:
-            self.canvas.configure(width=self.photo_image.width(), height=self.photo_image.height())
-            self.canvas.create_rectangle(0, 0, self.photo_image.width(), self.photo_image.height(), fill=default_img_color)
+        self.orig_pil_image = None
+        self.pil_image = None
+        self.width = None
+        self.height = None
 
     def new(self):
-        self.canvas.delete('all')
-        self.photo_image = tk.PhotoImage(width=default_img_width,
-                                         height=default_img_height)
-        self.__configure()
-        self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+        self.width = self.canvas.winfo_width()
+        self.height = self.canvas.winfo_height()
+        self.pil_image = PilImage.new("RGB", (self.width, self.height), (255, 255, 255))
+        self.photo_image = ImageTk.PhotoImage(self.pil_image)
+        self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
 
     def open(self, file_path):
-        self.photo_image = tk.PhotoImage(file=file_path)
-        self.__configure()
-        self.canvas.create_image(0, 0, image=self.photo_image, anchor="nw")
+        self.orig_pil_image = PilImage.open(file_path)
+        self.pil_image = self.orig_pil_image.copy()
+        self.width, self.height = self.pil_image.size
+        self.photo_image = ImageTk.PhotoImage(self.pil_image)
+        self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
 
     def save(self, file_path):
-        self.photo_image.write(file_path, format="png")
+        self.pil_image.save(file_path)
+
+    def resize(self, width, height):
+        resized_pil_image = self.orig_pil_image.resize((width, height))
+        self.pil_image = resized_pil_image.copy()
+        self.width, self.height = self.pil_image.size
+        self.photo_image = ImageTk.PhotoImage(self.pil_image)
+        self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)

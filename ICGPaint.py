@@ -46,12 +46,14 @@ class MainApplication(tk.Frame):
         self.filemenu.add_separator()
         self.filemenu.add_command(label="Exit", command=self.parent.quit)
         self.menubar.add_cascade(label="File", menu=self.filemenu)
+        self.editmenu = Menu(self.menubar, tearoff=False)
+        self.editmenu.add_command(label="Resize", command=self.resize_image)
+        self.menubar.add_cascade(label="Edit", menu=self.editmenu)
         self.parent.config(menu=self.menubar)
 
         self.canvas.bind('<ButtonPress-1>', self.brush.draw_pixel) # bind left button to self.brush.draw_pixel
         self.canvas.bind('<B1-Motion>', self.brush.draw_pixel) # bind mouse move to self.brush.draw_pixel         
         self.parent.bind('<ButtonPress-2>', self.brush.change_color) # bind scroll wheel click to colorpicker
-
 
     def open_file(self):
         file_path = tk.filedialog.askopenfilename(filetypes=[("PNG Image files", "*.png;")])
@@ -62,6 +64,12 @@ class MainApplication(tk.Frame):
         file_path = tk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
         if file_path:
             self.image_project.save(file_path)
+            
+    def resize_image(self):
+        width = simpledialog.askinteger(title="Resize Image", prompt="Enter width:")
+        height = simpledialog.askinteger(title="Resize Image", prompt="Enter height:")
+        if width and height:
+            self.image_project.resize(width, height)
 
 if __name__ == "__main__":
     root = tk.Tk()
